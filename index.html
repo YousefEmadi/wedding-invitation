@@ -32,16 +32,33 @@
             margin-bottom: 50px;
         }
         
-        .buttons {
+        /* Step 1: Start Music */
+        .step-music {
             display: flex;
             flex-direction: column;
+            align-items: center;
             gap: 20px;
-            margin-bottom: 40px;
         }
         
-        .enter-btn {
-            padding: 20px 60px;
-            font-size: 22px;
+        .step-music.hidden {
+            display: none;
+        }
+        
+        /* Step 2: Choose Language */
+        .step-language {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .step-language.show {
+            display: flex;
+        }
+        
+        .music-btn {
+            padding: 25px 70px;
+            font-size: 24px;
             border: 2px solid white;
             background: transparent;
             color: white;
@@ -49,24 +66,54 @@
             cursor: pointer;
             transition: all 0.3s;
             font-family: Georgia, serif;
+            /* Important for iOS */
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
         
-        .enter-btn:hover {
+        .music-btn:hover, .music-btn:active {
             background: white;
             color: #1a1a2e;
         }
         
-        .enter-btn.farsi {
-            font-size: 24px;
+        .lang-buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
         
-        /* Music Player Box */
+        .lang-btn {
+            padding: 18px 50px;
+            font-size: 20px;
+            border: 2px solid white;
+            background: transparent;
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: Georgia, serif;
+            text-decoration: none;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        
+        .lang-btn:hover, .lang-btn:active {
+            background: white;
+            color: #1a1a2e;
+        }
+        
+        .lang-btn.farsi {
+            font-size: 22px;
+        }
+        
+        /* Music Player */
         .music-player {
+            margin-top: 40px;
             background: rgba(255,255,255,0.1);
-            padding: 20px 40px;
-            border-radius: 20px;
+            padding: 15px 30px;
+            border-radius: 30px;
             display: none;
-            flex-direction: column;
             align-items: center;
             gap: 15px;
         }
@@ -75,106 +122,123 @@
             display: flex;
         }
         
-        .player-text {
+        .now-playing {
             font-size: 14px;
             opacity: 0.8;
         }
         
         .mute-btn {
-            padding: 10px 30px;
-            font-size: 18px;
+            padding: 8px 20px;
+            font-size: 16px;
             border: 1px solid rgba(255,255,255,0.5);
             background: transparent;
             color: white;
-            border-radius: 25px;
+            border-radius: 20px;
             cursor: pointer;
         }
         
-        .instruction {
+        .tip {
             margin-top: 30px;
-            padding: 20px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 15px;
-            max-width: 400px;
-            display: none;
-        }
-        
-        .instruction.show {
-            display: block;
-        }
-        
-        .instruction p {
-            font-size: 14px;
-            opacity: 0.9;
-            line-height: 1.6;
+            font-size: 13px;
+            opacity: 0.6;
+            max-width: 300px;
+            line-height: 1.5;
         }
     </style>
 </head>
 <body>
     <h1>💍 You're Invited</h1>
-    <p class="subtitle">Choose your language</p>
+    <p class="subtitle">A Wedding Celebration</p>
     
-    <div class="buttons">
-        <button class="enter-btn" onclick="enterSite('en')">
-            🎵 English
-        </button>
-        <button class="enter-btn farsi" onclick="enterSite('fa')">
-            🎵 فارسی
+    <!-- Step 1: Start Music First -->
+    <div class="step-music" id="stepMusic">
+        <button class="music-btn" id="startMusicBtn">
+            🎵 Open Your Invitation
         </button>
     </div>
     
-    <!-- Music Player (shows after click) -->
-    <div class="music-player" id="player">
-        <span class="player-text">🎵 Petite Fleur is playing...</span>
-        <button class="mute-btn" id="muteBtn" onclick="toggleMute()">🔊 Mute</button>
-    </div>
-    
-    <!-- Instruction (shows after click) -->
-    <div class="instruction" id="instruction">
-        <p>
-            ✨ Keep this tab open for music!<br>
-            Your invitation opened in a new tab.
+    <!-- Step 2: Choose Language (shows after music starts) -->
+    <div class="step-language" id="stepLanguage">
+        <p style="margin-bottom: 10px; opacity: 0.8;">Choose your language</p>
+        <div class="lang-buttons">
+            <a href="https://shahan2026.my.canva.site/wedding-invitation/" 
+               target="_blank" 
+               class="lang-btn">
+                English
+            </a>
+            <a href="https://shahan2026.my.canva.site/wedding-invitation/page-2" 
+               target="_blank" 
+               class="lang-btn farsi">
+                فارسی
+            </a>
+        </div>
+        
+        <!-- Music Player Controls -->
+        <div class="music-player show">
+            <span class="now-playing">🎵 Playing...</span>
+            <button class="mute-btn" id="muteBtn">🔊</button>
+        </div>
+        
+        <p class="tip">
+            ✨ Keep this tab open for music while viewing your invitation
         </p>
     </div>
     
-    <!-- Audio -->
-    <audio id="bgMusic" loop>
+    <!-- Audio element -->
+    <audio id="bgMusic" loop preload="auto">
         <source src="./petite-fleur.mp3" type="audio/mpeg">
     </audio>
     
     <script>
-        var musicStarted = false;
+        var music = document.getElementById('bgMusic');
+        var startBtn = document.getElementById('startMusicBtn');
+        var stepMusic = document.getElementById('stepMusic');
+        var stepLanguage = document.getElementById('stepLanguage');
+        var muteBtn = document.getElementById('muteBtn');
         
-        function enterSite(lang) {
-            // Start music
-            var music = document.getElementById('bgMusic');
+        // Preload audio on page load
+        music.load();
+        
+        // iOS fix: Start music IMMEDIATELY on touch/click
+        startBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Set volume and play IMMEDIATELY - no delays!
             music.volume = 0.5;
-            music.play();
             
-            // Show player and instruction
-            document.getElementById('player').classList.add('show');
-            document.getElementById('instruction').classList.add('show');
+            // This must happen synchronously in the click handler for iOS
+            var playPromise = music.play();
             
-            // URLs
-            var englishURL = 'https://shahan2026.my.canva.site/wedding-invitation/';
-            var farsiURL = 'https://shahan2026.my.canva.site/wedding-invitation/page-2';
-            
-            // Open Canva site in new tab
-            if (lang === 'fa') {
-                window.open(farsiURL, '_blank');
+            if (playPromise !== undefined) {
+                playPromise.then(function() {
+                    // Music started successfully
+                    stepMusic.classList.add('hidden');
+                    stepLanguage.classList.add('show');
+                }).catch(function(error) {
+                    // Fallback: try again
+                    console.log('Play failed, trying again:', error);
+                    music.play();
+                    stepMusic.classList.add('hidden');
+                    stepLanguage.classList.add('show');
+                });
             } else {
-                window.open(englishURL, '_blank');
+                // Older browsers
+                stepMusic.classList.add('hidden');
+                stepLanguage.classList.add('show');
             }
-            
-            musicStarted = true;
-        }
+        });
         
-        function toggleMute() {
-            var music = document.getElementById('bgMusic');
-            var btn = document.getElementById('muteBtn');
+        // Also handle touchend for iOS
+        startBtn.addEventListener('touchend', function(e) {
+            // Trigger click
+            startBtn.click();
+        }, {passive: true});
+        
+        // Mute toggle
+        muteBtn.addEventListener('click', function() {
             music.muted = !music.muted;
-            btn.textContent = music.muted ? '🔇 Unmute' : '🔊 Mute';
-        }
+            muteBtn.textContent = music.muted ? '🔇' : '🔊';
+        });
     </script>
 </body>
 </html>
