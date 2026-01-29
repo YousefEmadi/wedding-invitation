@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Invitation</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            font-family: Georgia, serif;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: normal;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 50px;
+        }
+        
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .enter-btn {
+            padding: 20px 60px;
+            font-size: 22px;
+            border: 2px solid white;
+            background: transparent;
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: Georgia, serif;
+        }
+        
+        .enter-btn:hover {
+            background: white;
+            color: #1a1a2e;
+        }
+        
+        .enter-btn.farsi {
+            font-size: 24px;
+        }
+        
+        /* Music Player Box */
+        .music-player {
+            background: rgba(255,255,255,0.1);
+            padding: 20px 40px;
+            border-radius: 20px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .music-player.show {
+            display: flex;
+        }
+        
+        .player-text {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .mute-btn {
+            padding: 10px 30px;
+            font-size: 18px;
+            border: 1px solid rgba(255,255,255,0.5);
+            background: transparent;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+        
+        .instruction {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            max-width: 400px;
+            display: none;
+        }
+        
+        .instruction.show {
+            display: block;
+        }
+        
+        .instruction p {
+            font-size: 14px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <h1>💍 You're Invited</h1>
+    <p class="subtitle">Choose your language</p>
+    
+    <div class="buttons">
+        <button class="enter-btn" onclick="enterSite('en')">
+            🎵 English
+        </button>
+        <button class="enter-btn farsi" onclick="enterSite('fa')">
+            🎵 فارسی
+        </button>
+    </div>
+    
+    <!-- Music Player (shows after click) -->
+    <div class="music-player" id="player">
+        <span class="player-text">🎵 Petite Fleur is playing...</span>
+        <button class="mute-btn" id="muteBtn" onclick="toggleMute()">🔊 Mute</button>
+    </div>
+    
+    <!-- Instruction (shows after click) -->
+    <div class="instruction" id="instruction">
+        <p>
+            ✨ Keep this tab open for music!<br>
+            Your invitation opened in a new tab.
+        </p>
+    </div>
+    
+    <!-- Audio -->
+    <audio id="bgMusic" loop>
+        <source src="./petite-fleur.mp3" type="audio/mpeg">
+    </audio>
+    
+    <script>
+        var musicStarted = false;
+        
+        function enterSite(lang) {
+            // Start music
+            var music = document.getElementById('bgMusic');
+            music.volume = 0.5;
+            music.play();
+            
+            // Show player and instruction
+            document.getElementById('player').classList.add('show');
+            document.getElementById('instruction').classList.add('show');
+            
+            // URLs
+            var englishURL = 'https://shahan2026.my.canva.site/wedding-invitation/';
+            var farsiURL = 'https://shahan2026.my.canva.site/wedding-invitation/page-2';
+            
+            // Open Canva site in new tab
+            if (lang === 'fa') {
+                window.open(farsiURL, '_blank');
+            } else {
+                window.open(englishURL, '_blank');
+            }
+            
+            musicStarted = true;
+        }
+        
+        function toggleMute() {
+            var music = document.getElementById('bgMusic');
+            var btn = document.getElementById('muteBtn');
+            music.muted = !music.muted;
+            btn.textContent = music.muted ? '🔇 Unmute' : '🔊 Mute';
+        }
+    </script>
+</body>
+</html>
